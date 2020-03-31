@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
-    public static void main(String args[]){
+    public static void main(String[] args){
         new ChessGame();
     }
 }
 
 class ChessGame extends JFrame {
-    public static final int WIDTH=1000, HEIGHT=1000;
+    public static final int WIDTH=800, HEIGHT=800;
     ArrayList<JPanel> listOfFields = new ArrayList<>();
     public ChessGame(){
         setResizable(false);
@@ -164,6 +164,7 @@ class ChessGame extends JFrame {
             }
             counterOfFields++;
         }
+        pack();
     }
     public static BufferedImage resize(BufferedImage img, int newW, int newH) {
         Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
