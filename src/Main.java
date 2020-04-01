@@ -17,9 +17,12 @@ public class Main {
 class ChessGame extends JFrame {
     public static final int WIDTH=800, HEIGHT=800;
     ArrayList<FieldPanel> listOfFields = new ArrayList<>();
+    ArrayList<ImageIcon> listOfIcons = new ArrayList<>();
     Boolean selectedFigure = false;
     FieldPanel oldField;
     Boolean whiteToMove=true;
+    BufferedImage[] sprites;
+    ImageIcon wPawnIcon, wKnightIcon, wBishopIcon, wRookIcon, wQueenIcon, wKingIcon, bPawnIcon, bKnightIcon, bBishopIcon, bRookIcon, bQueenIcon, bKingIcon;
     public ChessGame(){
         setResizable(false);
         setTitle("Chess by Beast :)");
@@ -75,7 +78,7 @@ class ChessGame extends JFrame {
         final int height = bigImg.getHeight()/2;
         final int rows = 2;
         final int cols = 6;
-        BufferedImage[] sprites = new BufferedImage[rows * cols];
+        sprites = new BufferedImage[rows * cols];
 
         for (int i = 0; i < rows; i++)
         {
@@ -87,98 +90,92 @@ class ChessGame extends JFrame {
 
         for(int i = 0; i < sprites.length ; i++){
             sprites[i] = resize(sprites[i],WIDTH/8, HEIGHT/8);
+            listOfIcons.add(new ImageIcon(sprites[i]));
         }
+        wPawnIcon=listOfIcons.get(5);
+        wKnightIcon=listOfIcons.get(3);
+        wBishopIcon=listOfIcons.get(2);
+        wRookIcon=listOfIcons.get(4);
+        wQueenIcon=listOfIcons.get(1);
+        wKingIcon=listOfIcons.get(0);
+        bPawnIcon=listOfIcons.get(11);
+        bKnightIcon=listOfIcons.get(9);
+        bBishopIcon=listOfIcons.get(8);
+        bRookIcon=listOfIcons.get(10);
+        bQueenIcon=listOfIcons.get(7);
+        bKingIcon=listOfIcons.get(6);
 
         int counterOfFields = 0;
         for(FieldPanel field : listOfFields){
             field.setLayout(new GridBagLayout());
+            if(counterOfFields == 18){
+                JLabel icon = new JLabel();
+                icon.setIcon(wPawnIcon);
+                field.setFigure(icon, FieldPanel.FigureType.WPAWN);
+            }
             if(counterOfFields == 0 || counterOfFields == 7){ // black rooks
                 JLabel icon = new JLabel();
-                icon.setIcon(new ImageIcon(sprites[10]));
-                icon.setVisible(true);
-                field.setFigure(icon, "BROOK");
-                field.add(icon);
+                icon.setIcon(bRookIcon);
+                field.setFigure(icon, FieldPanel.FigureType.BROOK);
             }
             if(counterOfFields == 1 || counterOfFields == 6){ // black knights
                 JLabel icon = new JLabel();
-                icon.setIcon(new ImageIcon(sprites[9]));
-                icon.setVisible(true);
-                field.setFigure(icon, "BKNIGHT");
-                field.add(icon);
+                icon.setIcon(bKnightIcon);
+                field.setFigure(icon, FieldPanel.FigureType.BKNIGHT);
             }
             if(counterOfFields == 2 || counterOfFields == 5){ // black bishops
                 JLabel icon = new JLabel();
-                icon.setIcon(new ImageIcon(sprites[8]));
-                icon.setVisible(true);
-                field.setFigure(icon, "BBISHOP");
-                field.add(icon);
+                icon.setIcon(bBishopIcon);
+                field.setFigure(icon, FieldPanel.FigureType.BBISHOP);
             }
             if(counterOfFields == 3){                         // black queen
                 JLabel icon = new JLabel();
-                icon.setIcon(new ImageIcon(sprites[7]));
-                icon.setVisible(true);
-                field.setFigure(icon, "BQUEEN");
-                field.add(icon);
+                icon.setIcon(bQueenIcon);
+                field.setFigure(icon, FieldPanel.FigureType.BQUEEN);
             }
             if(counterOfFields == 4){                         // black king
                 JLabel icon = new JLabel();
-                icon.setIcon(new ImageIcon(sprites[6]));
-                icon.setVisible(true);
-                field.setFigure(icon, "BKING");
-                field.add(icon);
+                icon.setIcon(bKingIcon);
+                field.setFigure(icon, FieldPanel.FigureType.BKING);
             }
             for(int i = 8; i < 16; i++){
                 if(counterOfFields == i){                     // black pawns
                     JLabel icon = new JLabel();
-                    icon.setIcon(new ImageIcon(sprites[11]));
-                    icon.setVisible(true);
-                    field.setFigure(icon, "BPAWN");
-                    field.add(icon);
+                    icon.setIcon(bPawnIcon);
+                    field.setFigure(icon, FieldPanel.FigureType.BPAWN);
                 }
             }
             for(int i = 48; i < 56; i++){
                 if(counterOfFields == i){                     // white pawns
                     JLabel icon = new JLabel();
-                    icon.setIcon(new ImageIcon(sprites[5]));
-                    icon.setVisible(true);
-                    field.setFigure(icon, "WPAWN");
-                    field.add(icon);
+                    icon.setIcon(wPawnIcon);
+                    field.setFigure(icon, FieldPanel.FigureType.WPAWN);
                 }
             }
             if(counterOfFields == 56 || counterOfFields == 63){ // white rooks
                 JLabel icon = new JLabel();
-                icon.setIcon(new ImageIcon(sprites[4]));
-                icon.setVisible(true);
-                field.setFigure(icon, "WROOK");
-                field.add(icon);
+                icon.setIcon(wRookIcon);
+                field.setFigure(icon, FieldPanel.FigureType.WROOK);
             }
             if(counterOfFields == 57 || counterOfFields == 62){ // white knights
                 JLabel icon = new JLabel();
-                icon.setIcon(new ImageIcon(sprites[3]));
-                icon.setVisible(true);
-                field.setFigure(icon, "WKNIGHT");
-                field.add(icon);
+                icon.setIcon(wKnightIcon);
+                field.setFigure(icon, FieldPanel.FigureType.WKNIGHT);
             }
             if(counterOfFields == 58 || counterOfFields == 61){ // white bishops
                 JLabel icon = new JLabel();
-                icon.setIcon(new ImageIcon(sprites[2]));
-                icon.setVisible(true);
-                field.setFigure(icon, "WBISHOP");
-                field.add(icon);
+                icon.setIcon(wBishopIcon);
+                field.setFigure(icon, FieldPanel.FigureType.WBISHOP);
             }
             if(counterOfFields == 59){ // white queen
                 JLabel icon = new JLabel();
-                icon.setIcon(new ImageIcon(sprites[1]));
-                icon.setVisible(true);
-                field.setFigure(icon, "WQUEEN");
-                field.add(icon);
+                icon.setIcon(wQueenIcon);
+                field.setFigure(icon, FieldPanel.FigureType.WQUEEN);
             }
             if(counterOfFields == 60){ // white king
                 JLabel icon = new JLabel();
-                icon.setIcon(new ImageIcon(sprites[0]));
-                icon.setVisible(true);
-                field.setFigure(icon, "WKING");
-                field.add(icon);
+                icon.setIcon(wKingIcon);
+                field.setFigure(icon, FieldPanel.FigureType.WKING);
             }
             counterOfFields++;
         }
@@ -200,11 +197,9 @@ class ChessGame extends JFrame {
                                 selectedFigure = true;
                                 showPossibleMoves(field);
                                 field.setSelected();
-                            }
-                            if(selectedFigure){
-                                if(!field.getWhitePresent() && !field.getBlackPresent()){
+                            }else if(selectedFigure){
+                                if(!field.getWhitePresent()){
                                     selectedFigure = false;
-                                    field.setSelected();
                                     moveFigure(oldField, field);
                                 }else if(field.getWhitePresent()){
                                     oldField.setUnSelected();
@@ -226,12 +221,11 @@ class ChessGame extends JFrame {
 
     private void moveFigure(FieldPanel oldField, FieldPanel field) {
         if(oldField.getPossibleMoves().contains(field)){
-            field.setFigure(oldField.getFigure(), oldField.getFigureType());
-            oldField.removeFigure();
-            oldField.setUnSelected();
-            field.setUnSelected();
-            field.add(field.getFigure());
+            field.setFigure(oldField.getFigure(),oldField.getFigureType());
+            field.getFigure().repaint();
             field.repaint();
+            oldField.removeFigure();
+            oldField.repaint();
         }
         for(FieldPanel clearField : listOfFields){
             clearField.setUnSelected();
@@ -239,18 +233,36 @@ class ChessGame extends JFrame {
     }
 
     private void checkPossibleMoves(FieldPanel field) {
-        FieldPanel possibleField;
-        if(!field.isEmpty()){
-            if(field.getFigureType().equals(FieldPanel.FigureType.WPAWN.toString())){
+        FieldPanel possibleField, possibleTakeField;
+        if(!field.isEmpty() || field.getWhitePresent() || field.getBlackPresent()){
+            if(field.getFigureType().equals(FieldPanel.FigureType.WPAWN)){
                 if(field.getFigureY()==6){
+
                     possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-1); // 1 up
-                    if(possibleField.isEmpty()){ field.addPossibleMoves(possibleField); }
+                    if(possibleField.isEmpty()){
+                        field.addPossibleMoves(possibleField);
+                    }
 
                     possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-2); // 2 up
-                    if(possibleField.isEmpty()){ field.addPossibleMoves(possibleField); }
+                    if(possibleField.isEmpty()){
+                        field.addPossibleMoves(possibleField);
+                    }
+
                 }else if(field.getFigureY() < 6  && field.getFigureY()>=0){
                     possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-1); // 1 up
                     if(possibleField.isEmpty()){ field.addPossibleMoves(possibleField); }
+                }
+
+                if(field.getFigureX()-1 >=0 && field.getFigureY()-1 >=0 && field.getFigureX()+1 <=7){ // not first row and not first column and not last column
+                    possibleTakeField = getFieldByXY(field.getFigureX()-1, field.figureY-1);
+                    if(!possibleTakeField.isEmpty() && possibleTakeField.getBlackPresent()){
+                        field.addPossibleMoves(possibleTakeField);
+                    }
+
+                    possibleTakeField = getFieldByXY(field.getFigureX()+1, field.figureY-1);
+                    if(!possibleTakeField.isEmpty() && possibleTakeField.getBlackPresent()){
+                        field.addPossibleMoves(possibleTakeField);
+                    }
                 }
             }
         }
@@ -290,7 +302,6 @@ class FieldPanel extends JPanel{
     JLabel figure;
     FigureType figureType;
     Integer figureX,figureY;
-    Icon icon;
     Boolean whitePresent, blackPresent;
     ArrayList<FieldPanel> possibleMoves;
     public FieldPanel(Integer figureX, Integer figureY){
@@ -311,28 +322,20 @@ class FieldPanel extends JPanel{
     }
 
     public boolean isEmpty() {
-        if (this.icon == null) return true;
+        if (this.figure.getIcon() == null) return true;
         else return false;
     }
 
     public void addPossibleMoves(FieldPanel possibleField) {
-        this.possibleMoves.add(possibleField);
+        getPossibleMoves().add(possibleField);
     }
 
     public enum FigureType{
         WPAWN, WKNIGHT, WBISHOP, WROOK, WQUEEN, WKING, BPAWN, BKNIGHT, BBISHOP, BROOK, BQUEEN, BKING;
     }
 
-    public Icon getIcon() {
-        return icon;
-    }
-
     public ArrayList<FieldPanel> getPossibleMoves(){
         return this.possibleMoves;
-    }
-
-    public void setIcon(Icon icon) {
-        this.icon = icon;
     }
 
     public Integer getFigureX() {
@@ -363,40 +366,27 @@ class FieldPanel extends JPanel{
         this.blackPresent = setBlackPresent;
     }
 
-    public void setFigure(JLabel figure, String figureType) {
+    public void setFigure(JLabel figure, FigureType figureType) {
         this.figure = figure;
-        this.setIcon(figure.getIcon());
-
-        if(figureType.equals("WPAWN")) this.figureType = FigureType.WPAWN;
-        if(figureType.equals("WKNIGHT")) this.figureType = FigureType.WKNIGHT;
-        if(figureType.equals("WBISHOP")) this.figureType = FigureType.WBISHOP;
-        if(figureType.equals("WROOK")) this.figureType = FigureType.WROOK;
-        if(figureType.equals("WQUEEN")) this.figureType = FigureType.WQUEEN;
-        if(figureType.equals("WKING")) this.figureType = FigureType.WKING;
-
-        if(figureType.equals("BPAWN")) this.figureType = FigureType.BPAWN;
-        if(figureType.equals("BKNIGHT")) this.figureType = FigureType.BKNIGHT;
-        if(figureType.equals("BBISHOP")) this.figureType = FigureType.BBISHOP;
-        if(figureType.equals("BROOK")) this.figureType = FigureType.BROOK;
-        if(figureType.equals("BQUEEN")) this.figureType = FigureType.BQUEEN;
-        if(figureType.equals("BKING")) this.figureType = FigureType.BKING;
-
-        if(figureType.startsWith("W")) this.setWhitePresent(true);
+        this.figureType = figureType;
+        this.figure.setIcon(figure.getIcon());
+        if(figureType.toString().startsWith("W")) this.setWhitePresent(true);
         else this.setWhitePresent(false);
-        if(figureType.startsWith("B")) this.setBlackPresent(true);
+        if(figureType.toString().startsWith("B")) this.setBlackPresent(true);
         else this.setBlackPresent(false);
+        add(figure);
+        repaint();
     }
 
-    public String getFigureType() {
-        return this.figureType.toString();
+    public FigureType getFigureType() {
+        return this.figureType;
     }
 
     public void removeFigure(){
-        this.figureType = null;
-        this.setIcon(null);
-        remove(this.figure);
-        validate();
+        getFigure().setIcon(null);
         repaint();
+        setWhitePresent(null);
+        setBlackPresent(null);
     }
 
     public void displayPossibleMoves(){
