@@ -19,7 +19,7 @@ class ChessGame extends JFrame {
     ArrayList<FieldPanel> listOfFields = new ArrayList<>();
     Boolean selectedFigure = false;
     FieldPanel oldField;
-    Integer counterClick=0;
+    Boolean whiteToMove=true;
     public ChessGame(){
         setResizable(false);
         setTitle("Chess by Beast :)");
@@ -42,7 +42,7 @@ class ChessGame extends JFrame {
         Color blackColor = new Color(133, 99, 72);
         for(int i=0; i<8; i++){
             for(int j=0; j<8; j++){
-                FieldPanel field = new FieldPanel(i,j);
+                FieldPanel field = new FieldPanel(j,i);
                 field.setVisible(true);
                 listOfFields.add(field);
                 if(i%2==0){
@@ -191,44 +191,86 @@ class ChessGame extends JFrame {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     super.mousePressed(e);
-                    counterClick++;
-                    if(counterClick>2) counterClick=1;
-                    if(field.getIcon() != null && !selectedFigure){
-                        selectedFigure = true;
-                        field.setBorder(BorderFactory.createLineBorder(new Color(155, 255, 154), 5));
-                        oldField = field;
-                        counterClick=1;
-                    }
-                    if(field.getIcon() == null && selectedFigure){
-                        if(!oldField.getFigureX().equals(field.getFigureX()) || !oldField.getFigureY().equals(field.getFigureY())){
-                            oldField.setBorder(null);
-                            field.setIcon(oldField.getIcon());
-                            field.setFigure(oldField.getFigure(), oldField.getFigureType());
-                            field.add(oldField.getFigure());
-                            field.repaint();
-                            oldField.removeFigure();
-                            selectedFigure = false;
-                        }
-                    }
-                    if(counterClick==2){
-                        if(field.getIcon() != null && selectedFigure){
-                            if (oldField.getFigureX().equals(field.getFigureX()) && oldField.getFigureY().equals(field.getFigureY())){
-                                selectedFigure = false;
-                                field.setBorder(null);
+
+                    checkPossibleMoves(field); // add fields to list possibleMoves
+                    if(SwingUtilities.isLeftMouseButton(e)){
+                        if(whiteToMove){
+                            if(field.getWhitePresent() && !selectedFigure){
+                                oldField = field;
+                                selectedFigure = true;
+                                showPossibleMoves(field);
+                                field.setSelected();
                             }
-                            if(!oldField.getFigureX().equals(field.getFigureX()) || !oldField.getFigureY().equals(field.getFigureY())){
-                                counterClick=1;
+                            if(selectedFigure){
+                                if(!field.getWhitePresent() && !field.getBlackPresent()){
+                                    selectedFigure = false;
+                                    field.setSelected();
+                                    moveFigure(oldField, field);
+                                }else if(field.getWhitePresent()){
+                                    oldField.setUnSelected();
+                                    oldField = field;
+                                    showPossibleMoves(field);
+                                    field.setSelected();
+                                }
                             }
                         }
                     }
                 }
-
                 @Override
                 public void mouseDragged(MouseEvent e) {
                     super.mouseDragged(e);
                 }
             });
         }
+    }
+
+    private void moveFigure(FieldPanel oldField, FieldPanel field) {
+        if(oldField.getPossibleMoves().contains(field)){
+            field.setFigure(oldField.getFigure(), oldField.getFigureType());
+            oldField.removeFigure();
+            oldField.setUnSelected();
+            field.setUnSelected();
+            field.add(field.getFigure());
+            field.repaint();
+        }
+        for(FieldPanel clearField : listOfFields){
+            clearField.setUnSelected();
+        }
+    }
+
+    private void checkPossibleMoves(FieldPanel field) {
+        FieldPanel possibleField;
+        if(!field.isEmpty()){
+            if(field.getFigureType().equals(FieldPanel.FigureType.WPAWN.toString())){
+                if(field.getFigureY()==6){
+                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-1); // 1 up
+                    if(possibleField.isEmpty()){ field.addPossibleMoves(possibleField); }
+
+                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-2); // 2 up
+                    if(possibleField.isEmpty()){ field.addPossibleMoves(possibleField); }
+                }else if(field.getFigureY() < 6  && field.getFigureY()>=0){
+                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-1); // 1 up
+                    if(possibleField.isEmpty()){ field.addPossibleMoves(possibleField); }
+                }
+            }
+        }
+    }
+    private void showPossibleMoves(FieldPanel field){
+        for(FieldPanel clearField : listOfFields){
+            clearField.setUnSelected();
+        }
+        for(FieldPanel foundField : field.getPossibleMoves()){
+            foundField.setBorder(BorderFactory.createLineBorder(Color.black, 4));
+        }
+    }
+
+    private FieldPanel getFieldByXY(Integer figureX, Integer figureY) {
+        for(FieldPanel field : listOfFields){
+            if(field.getFigureX() == figureX && field.getFigureY() == figureY){
+                return field;
+            }
+        }
+        return null;
     }
 
     public static BufferedImage resize(BufferedImage img, int newW, int newH) {
@@ -249,18 +291,44 @@ class FieldPanel extends JPanel{
     FigureType figureType;
     Integer figureX,figureY;
     Icon icon;
+    Boolean whitePresent, blackPresent;
+    ArrayList<FieldPanel> possibleMoves;
     public FieldPanel(Integer figureX, Integer figureY){
+        this.possibleMoves = new ArrayList<FieldPanel>();
+        this.whitePresent = false;
+        this.blackPresent = false;
         this.figureX = figureX;
         this.figureY = figureY;
         field = new JPanel();
         figure = new JLabel();
     }
+
+    public void setSelected() {
+        setBorder(BorderFactory.createLineBorder(new Color(193, 255, 179), 5));
+    }
+    public void setUnSelected() {
+        setBorder(null);
+    }
+
+    public boolean isEmpty() {
+        if (this.icon == null) return true;
+        else return false;
+    }
+
+    public void addPossibleMoves(FieldPanel possibleField) {
+        this.possibleMoves.add(possibleField);
+    }
+
     public enum FigureType{
         WPAWN, WKNIGHT, WBISHOP, WROOK, WQUEEN, WKING, BPAWN, BKNIGHT, BBISHOP, BROOK, BQUEEN, BKING;
     }
 
     public Icon getIcon() {
         return icon;
+    }
+
+    public ArrayList<FieldPanel> getPossibleMoves(){
+        return this.possibleMoves;
     }
 
     public void setIcon(Icon icon) {
@@ -277,6 +345,22 @@ class FieldPanel extends JPanel{
 
     public JLabel getFigure() {
         return figure;
+    }
+
+    public Boolean getWhitePresent() {
+        return whitePresent;
+    }
+
+    public void setWhitePresent(Boolean setWhitePresent) {
+        this.whitePresent = setWhitePresent;
+    }
+
+    public Boolean getBlackPresent() {
+        return blackPresent;
+    }
+
+    public void setBlackPresent(Boolean setBlackPresent) {
+        this.blackPresent = setBlackPresent;
     }
 
     public void setFigure(JLabel figure, String figureType) {
@@ -296,7 +380,13 @@ class FieldPanel extends JPanel{
         if(figureType.equals("BROOK")) this.figureType = FigureType.BROOK;
         if(figureType.equals("BQUEEN")) this.figureType = FigureType.BQUEEN;
         if(figureType.equals("BKING")) this.figureType = FigureType.BKING;
+
+        if(figureType.startsWith("W")) this.setWhitePresent(true);
+        else this.setWhitePresent(false);
+        if(figureType.startsWith("B")) this.setBlackPresent(true);
+        else this.setBlackPresent(false);
     }
+
     public String getFigureType() {
         return this.figureType.toString();
     }
