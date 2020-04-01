@@ -1,6 +1,8 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +31,7 @@ class ChessGame extends JFrame {
 
         drawBoard();
         loadIcons();
+        addListeners(listOfFields);
     }
 
     public void drawBoard(){
@@ -179,6 +182,22 @@ class ChessGame extends JFrame {
         pack();
     }
 
+    public void addListeners(ArrayList<FieldPanel> listOfFields) {
+        for(FieldPanel field : listOfFields){
+            field.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    super.mousePressed(e);
+                }
+
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    super.mouseDragged(e);
+                }
+            });
+        }
+    }
+
     public static BufferedImage resize(BufferedImage img, int newW, int newH) {
         Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
         BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
@@ -210,6 +229,7 @@ class FieldPanel extends JPanel{
 
     public void setFigure(JLabel figure, String figureType) {
         this.figure = figure;
+
         if(figureType.equals("WPAWN")) this.figureType = FigureType.WPAWN;
         if(figureType.equals("WKNIGHT")) this.figureType = FigureType.WKNIGHT;
         if(figureType.equals("WBISHOP")) this.figureType = FigureType.WBISHOP;
@@ -225,4 +245,10 @@ class FieldPanel extends JPanel{
         if(figureType.equals("BKING")) this.figureType = FigureType.BKING;
     }
 
+    public void removeFigure(){
+        this.figureType = null;
+        remove(this.figure);
+        this.figure = null;
+        repaint();
+    }
 }
