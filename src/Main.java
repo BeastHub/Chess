@@ -90,35 +90,35 @@ class ChessGame extends JFrame {
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[10]));
                 icon.setVisible(true);
-                field.setFigure(icon, "bRook");
+                field.setFigure(icon, "BROOK");
                 field.add(icon);
             }
             if(counterOfFields == 1 || counterOfFields == 6){ // black knights
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[9]));
                 icon.setVisible(true);
-                field.setFigure(icon, "bKnight");
+                field.setFigure(icon, "BKNIGHT");
                 field.add(icon);
             }
             if(counterOfFields == 2 || counterOfFields == 5){ // black bishops
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[8]));
                 icon.setVisible(true);
-                field.setFigure(icon, "bBishop");
+                field.setFigure(icon, "BBISHOP");
                 field.add(icon);
             }
             if(counterOfFields == 3){                         // black queen
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[7]));
                 icon.setVisible(true);
-                field.setFigure(icon, "bQueen");
+                field.setFigure(icon, "BQUEEN");
                 field.add(icon);
             }
             if(counterOfFields == 4){                         // black king
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[6]));
                 icon.setVisible(true);
-                field.setFigure(icon, "bKing");
+                field.setFigure(icon, "BKING");
                 field.add(icon);
             }
             for(int i = 8; i < 16; i++){
@@ -126,7 +126,7 @@ class ChessGame extends JFrame {
                     JLabel icon = new JLabel();
                     icon.setIcon(new ImageIcon(sprites[11]));
                     icon.setVisible(true);
-                    field.setFigure(icon, "bPawn");
+                    field.setFigure(icon, "BPAWN");
                     field.add(icon);
                 }
             }
@@ -135,7 +135,7 @@ class ChessGame extends JFrame {
                     JLabel icon = new JLabel();
                     icon.setIcon(new ImageIcon(sprites[5]));
                     icon.setVisible(true);
-                    field.setFigure(icon, "wPawn");
+                    field.setFigure(icon, "WPAWN");
                     field.add(icon);
                 }
             }
@@ -143,41 +143,42 @@ class ChessGame extends JFrame {
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[4]));
                 icon.setVisible(true);
-                field.setFigure(icon, "wRook");
+                field.setFigure(icon, "WROOK");
                 field.add(icon);
             }
             if(counterOfFields == 57 || counterOfFields == 62){ // white knights
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[3]));
                 icon.setVisible(true);
-                field.setFigure(icon, "wKnight");
+                field.setFigure(icon, "WKNIGHT");
                 field.add(icon);
             }
             if(counterOfFields == 58 || counterOfFields == 61){ // white bishops
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[2]));
                 icon.setVisible(true);
-                field.setFigure(icon, "wBishop");
+                field.setFigure(icon, "WBISHOP");
                 field.add(icon);
             }
             if(counterOfFields == 59){ // white queen
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[1]));
                 icon.setVisible(true);
-                field.setFigure(icon, "wQueen");
+                field.setFigure(icon, "WQUEEN");
                 field.add(icon);
             }
             if(counterOfFields == 60){ // white king
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[0]));
                 icon.setVisible(true);
-                field.setFigure(icon, "wKing");
+                field.setFigure(icon, "WKING");
                 field.add(icon);
             }
             counterOfFields++;
         }
         pack();
     }
+
     public static BufferedImage resize(BufferedImage img, int newW, int newH) {
         Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
         BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
@@ -193,11 +194,15 @@ class ChessGame extends JFrame {
 class FieldPanel extends JPanel{
     JPanel field;
     JLabel figure;
-    String figureType;
+    FigureType figureType;
     public FieldPanel(){
         field = new JPanel();
         figure = new JLabel();
     }
+    public enum FigureType{
+        WPAWN, WKNIGHT, WBISHOP, WROOK, WQUEEN, WKING, BPAWN, BKNIGHT, BBISHOP, BROOK, BQUEEN, BKING;
+    }
+
 
     public JLabel getFigure() {
         return figure;
@@ -205,6 +210,19 @@ class FieldPanel extends JPanel{
 
     public void setFigure(JLabel figure, String figureType) {
         this.figure = figure;
-        this.figureType = figureType;
+        if(figureType.equals("WPAWN")) this.figureType = FigureType.WPAWN;
+        if(figureType.equals("WKNIGHT")) this.figureType = FigureType.WKNIGHT;
+        if(figureType.equals("WBISHOP")) this.figureType = FigureType.WBISHOP;
+        if(figureType.equals("WROOK")) this.figureType = FigureType.WROOK;
+        if(figureType.equals("WQUEEN")) this.figureType = FigureType.WQUEEN;
+        if(figureType.equals("WKING")) this.figureType = FigureType.WKING;
+
+        if(figureType.equals("BPAWN")) this.figureType = FigureType.BPAWN;
+        if(figureType.equals("BKNIGHT")) this.figureType = FigureType.BKNIGHT;
+        if(figureType.equals("BBISHOP")) this.figureType = FigureType.BBISHOP;
+        if(figureType.equals("BROOK")) this.figureType = FigureType.BROOK;
+        if(figureType.equals("BQUEEN")) this.figureType = FigureType.BQUEEN;
+        if(figureType.equals("BKING")) this.figureType = FigureType.BKING;
     }
+
 }
