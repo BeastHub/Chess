@@ -17,6 +17,9 @@ public class Main {
 class ChessGame extends JFrame {
     public static final int WIDTH=800, HEIGHT=800;
     ArrayList<FieldPanel> listOfFields = new ArrayList<>();
+    Boolean selectedFigure = false;
+    FieldPanel oldField;
+    Integer counterClick=0;
     public ChessGame(){
         setResizable(false);
         setTitle("Chess by Beast :)");
@@ -39,7 +42,7 @@ class ChessGame extends JFrame {
         Color blackColor = new Color(133, 99, 72);
         for(int i=0; i<8; i++){
             for(int j=0; j<8; j++){
-                FieldPanel field = new FieldPanel();
+                FieldPanel field = new FieldPanel(i,j);
                 field.setVisible(true);
                 listOfFields.add(field);
                 if(i%2==0){
@@ -188,6 +191,36 @@ class ChessGame extends JFrame {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     super.mousePressed(e);
+                    counterClick++;
+                    if(counterClick>2) counterClick=1;
+                    if(field.getIcon() != null && !selectedFigure){
+                        selectedFigure = true;
+                        field.setBorder(BorderFactory.createLineBorder(new Color(155, 255, 154), 5));
+                        oldField = field;
+                        counterClick=1;
+                    }
+                    if(field.getIcon() == null && selectedFigure){
+                        if(!oldField.getFigureX().equals(field.getFigureX()) || !oldField.getFigureY().equals(field.getFigureY())){
+                            oldField.setBorder(null);
+                            field.setIcon(oldField.getIcon());
+                            field.setFigure(oldField.getFigure(), oldField.getFigureType());
+                            field.add(oldField.getFigure());
+                            field.repaint();
+                            oldField.removeFigure();
+                            selectedFigure = false;
+                        }
+                    }
+                    if(counterClick==2){
+                        if(field.getIcon() != null && selectedFigure){
+                            if (oldField.getFigureX().equals(field.getFigureX()) && oldField.getFigureY().equals(field.getFigureY())){
+                                selectedFigure = false;
+                                field.setBorder(null);
+                            }
+                            if(!oldField.getFigureX().equals(field.getFigureX()) || !oldField.getFigureY().equals(field.getFigureY())){
+                                counterClick=1;
+                            }
+                        }
+                    }
                 }
 
                 @Override
@@ -214,7 +247,11 @@ class FieldPanel extends JPanel{
     JPanel field;
     JLabel figure;
     FigureType figureType;
-    public FieldPanel(){
+    Integer figureX,figureY;
+    Icon icon;
+    public FieldPanel(Integer figureX, Integer figureY){
+        this.figureX = figureX;
+        this.figureY = figureY;
         field = new JPanel();
         figure = new JLabel();
     }
@@ -222,6 +259,21 @@ class FieldPanel extends JPanel{
         WPAWN, WKNIGHT, WBISHOP, WROOK, WQUEEN, WKING, BPAWN, BKNIGHT, BBISHOP, BROOK, BQUEEN, BKING;
     }
 
+    public Icon getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Icon icon) {
+        this.icon = icon;
+    }
+
+    public Integer getFigureX() {
+        return figureX;
+    }
+
+    public Integer getFigureY() {
+        return figureY;
+    }
 
     public JLabel getFigure() {
         return figure;
@@ -229,6 +281,7 @@ class FieldPanel extends JPanel{
 
     public void setFigure(JLabel figure, String figureType) {
         this.figure = figure;
+        this.setIcon(figure.getIcon());
 
         if(figureType.equals("WPAWN")) this.figureType = FigureType.WPAWN;
         if(figureType.equals("WKNIGHT")) this.figureType = FigureType.WKNIGHT;
@@ -244,11 +297,19 @@ class FieldPanel extends JPanel{
         if(figureType.equals("BQUEEN")) this.figureType = FigureType.BQUEEN;
         if(figureType.equals("BKING")) this.figureType = FigureType.BKING;
     }
+    public String getFigureType() {
+        return this.figureType.toString();
+    }
 
     public void removeFigure(){
         this.figureType = null;
+        this.setIcon(null);
         remove(this.figure);
-        this.figure = null;
+        validate();
         repaint();
+    }
+
+    public void displayPossibleMoves(){
+        System.out.println(getFigureX() + ", " + getFigureY());
     }
 }
