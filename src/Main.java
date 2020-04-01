@@ -14,7 +14,7 @@ public class Main {
 
 class ChessGame extends JFrame {
     public static final int WIDTH=800, HEIGHT=800;
-    ArrayList<JPanel> listOfFields = new ArrayList<>();
+    ArrayList<FieldPanel> listOfFields = new ArrayList<>();
     public ChessGame(){
         setResizable(false);
         setTitle("Chess by Beast :)");
@@ -36,7 +36,7 @@ class ChessGame extends JFrame {
         Color blackColor = new Color(133, 99, 72);
         for(int i=0; i<8; i++){
             for(int j=0; j<8; j++){
-                JPanel field = new JPanel();
+                FieldPanel field = new FieldPanel();
                 field.setVisible(true);
                 listOfFields.add(field);
                 if(i%2==0){
@@ -76,7 +76,7 @@ class ChessGame extends JFrame {
             for (int j = 0; j < cols; j++)
             {
                 sprites[(i * cols) + j] = bigImg.getSubimage(j * width,i * height, width, height);
-            }
+        }
         }
 
         for(int i = 0; i < sprites.length ; i++){
@@ -84,36 +84,41 @@ class ChessGame extends JFrame {
         }
 
         int counterOfFields = 0;
-        for(JPanel field : listOfFields){
+        for(FieldPanel field : listOfFields){
             field.setLayout(new GridBagLayout());
             if(counterOfFields == 0 || counterOfFields == 7){ // black rooks
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[10]));
                 icon.setVisible(true);
+                field.setFigure(icon, "bRook");
                 field.add(icon);
             }
             if(counterOfFields == 1 || counterOfFields == 6){ // black knights
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[9]));
                 icon.setVisible(true);
+                field.setFigure(icon, "bKnight");
                 field.add(icon);
             }
             if(counterOfFields == 2 || counterOfFields == 5){ // black bishops
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[8]));
                 icon.setVisible(true);
+                field.setFigure(icon, "bBishop");
                 field.add(icon);
             }
             if(counterOfFields == 3){                         // black queen
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[7]));
                 icon.setVisible(true);
+                field.setFigure(icon, "bQueen");
                 field.add(icon);
             }
             if(counterOfFields == 4){                         // black king
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[6]));
                 icon.setVisible(true);
+                field.setFigure(icon, "bKing");
                 field.add(icon);
             }
             for(int i = 8; i < 16; i++){
@@ -121,6 +126,7 @@ class ChessGame extends JFrame {
                     JLabel icon = new JLabel();
                     icon.setIcon(new ImageIcon(sprites[11]));
                     icon.setVisible(true);
+                    field.setFigure(icon, "bPawn");
                     field.add(icon);
                 }
             }
@@ -129,6 +135,7 @@ class ChessGame extends JFrame {
                     JLabel icon = new JLabel();
                     icon.setIcon(new ImageIcon(sprites[5]));
                     icon.setVisible(true);
+                    field.setFigure(icon, "wPawn");
                     field.add(icon);
                 }
             }
@@ -136,30 +143,35 @@ class ChessGame extends JFrame {
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[4]));
                 icon.setVisible(true);
+                field.setFigure(icon, "wRook");
                 field.add(icon);
             }
             if(counterOfFields == 57 || counterOfFields == 62){ // white knights
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[3]));
                 icon.setVisible(true);
+                field.setFigure(icon, "wKnight");
                 field.add(icon);
             }
             if(counterOfFields == 58 || counterOfFields == 61){ // white bishops
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[2]));
                 icon.setVisible(true);
+                field.setFigure(icon, "wBishop");
                 field.add(icon);
             }
             if(counterOfFields == 59){ // white queen
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[1]));
                 icon.setVisible(true);
+                field.setFigure(icon, "wQueen");
                 field.add(icon);
             }
             if(counterOfFields == 60){ // white king
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(sprites[0]));
                 icon.setVisible(true);
+                field.setFigure(icon, "wKing");
                 field.add(icon);
             }
             counterOfFields++;
@@ -175,5 +187,24 @@ class ChessGame extends JFrame {
         g2d.dispose();
 
         return dimg;
+    }
+}
+
+class FieldPanel extends JPanel{
+    JPanel field;
+    JLabel figure;
+    String figureType;
+    public FieldPanel(){
+        field = new JPanel();
+        figure = new JLabel();
+    }
+
+    public JLabel getFigure() {
+        return figure;
+    }
+
+    public void setFigure(JLabel figure, String figureType) {
+        this.figure = figure;
+        this.figureType = figureType;
     }
 }
