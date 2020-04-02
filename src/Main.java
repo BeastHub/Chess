@@ -201,6 +201,7 @@ class ChessGame extends JFrame {
                                 if(!field.getWhitePresent()){
                                     selectedFigure = false;
                                     moveFigure(oldField, field);
+                                    pack();
                                 }else if(field.getWhitePresent()){
                                     oldField.setUnSelected();
                                     oldField = field;
@@ -221,9 +222,8 @@ class ChessGame extends JFrame {
 
     private void moveFigure(FieldPanel oldField, FieldPanel field) {
         if(oldField.getPossibleMoves().contains(field)){
+            field.removeFigure();
             field.setFigure(oldField.getFigure(),oldField.getFigureType());
-            field.getFigure().repaint();
-            field.repaint();
             oldField.removeFigure();
             oldField.repaint();
         }
@@ -233,9 +233,10 @@ class ChessGame extends JFrame {
     }
 
     private void checkPossibleMoves(FieldPanel field) {
+        field.getPossibleMoves().removeAll(field.getPossibleMoves());
         FieldPanel possibleField, possibleTakeField;
         if(!field.isEmpty() || field.getWhitePresent() || field.getBlackPresent()){
-            if(field.getFigureType().equals(FieldPanel.FigureType.WPAWN)){
+            if(field.getFigureType() == FieldPanel.FigureType.WPAWN){
                 if(field.getFigureY()==6){
 
                     possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-1); // 1 up
@@ -248,20 +249,25 @@ class ChessGame extends JFrame {
                         field.addPossibleMoves(possibleField);
                     }
 
-                }else if(field.getFigureY() < 6  && field.getFigureY()>=0){
+                }else if(field.getFigureY() < 6  && field.getFigureY()>=1){
                     possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-1); // 1 up
-                    if(possibleField.isEmpty()){ field.addPossibleMoves(possibleField); }
+                    if(possibleField.isEmpty()){
+                        field.addPossibleMoves(possibleField);
+                    }
                 }
 
-                if(field.getFigureX()-1 >=0 && field.getFigureY()-1 >=0 && field.getFigureX()+1 <=7){ // not first row and not first column and not last column
-                    possibleTakeField = getFieldByXY(field.getFigureX()-1, field.figureY-1);
-                    if(!possibleTakeField.isEmpty() && possibleTakeField.getBlackPresent()){
-                        field.addPossibleMoves(possibleTakeField);
+                if(field.getFigureY() >=1){ // not first row
+                    if(field.getFigureX() >= 1){
+                        possibleTakeField = getFieldByXY(field.getFigureX()-1, field.figureY-1);
+                        if(!possibleTakeField.isEmpty() && possibleTakeField.getBlackPresent()){
+                            field.addPossibleMoves(possibleTakeField);
+                        }
                     }
-
-                    possibleTakeField = getFieldByXY(field.getFigureX()+1, field.figureY-1);
-                    if(!possibleTakeField.isEmpty() && possibleTakeField.getBlackPresent()){
-                        field.addPossibleMoves(possibleTakeField);
+                    if(field.getFigureX() <=6){
+                        possibleTakeField = getFieldByXY(field.getFigureX()+1, field.figureY-1);
+                        if(!possibleTakeField.isEmpty() && possibleTakeField.getBlackPresent()){
+                            field.addPossibleMoves(possibleTakeField);
+                        }
                     }
                 }
             }
@@ -304,6 +310,16 @@ class FieldPanel extends JPanel{
     Integer figureX,figureY;
     Boolean whitePresent, blackPresent;
     ArrayList<FieldPanel> possibleMoves;
+    Icon icon;
+
+    public Icon getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Icon icon) {
+        this.icon = icon;
+    }
+
     public FieldPanel(Integer figureX, Integer figureY){
         this.possibleMoves = new ArrayList<FieldPanel>();
         this.whitePresent = false;
@@ -322,7 +338,7 @@ class FieldPanel extends JPanel{
     }
 
     public boolean isEmpty() {
-        if (this.figure.getIcon() == null) return true;
+        if (this.getIcon() == null) return true;
         else return false;
     }
 
@@ -369,13 +385,16 @@ class FieldPanel extends JPanel{
     public void setFigure(JLabel figure, FigureType figureType) {
         this.figure = figure;
         this.figureType = figureType;
-        this.figure.setIcon(figure.getIcon());
-        if(figureType.toString().startsWith("W")) this.setWhitePresent(true);
-        else this.setWhitePresent(false);
-        if(figureType.toString().startsWith("B")) this.setBlackPresent(true);
-        else this.setBlackPresent(false);
-        add(figure);
-        repaint();
+        this.setIcon(figure.getIcon());
+        if(this.figureType.toString().startsWith("W")){
+            this.setWhitePresent(true);
+            this.setBlackPresent(false);
+        }
+        if(this.figureType.toString().startsWith("B")){
+            this.setBlackPresent(true);
+            this.setWhitePresent(false);
+        }
+        this.add(this.figure);
     }
 
     public FigureType getFigureType() {
@@ -383,10 +402,13 @@ class FieldPanel extends JPanel{
     }
 
     public void removeFigure(){
-        getFigure().setIcon(null);
+        this.figureType=null;
+        this.setIcon(null);
+        remove(this.figure);
+        validate();
         repaint();
-        setWhitePresent(null);
-        setBlackPresent(null);
+        setWhitePresent(false);
+        setBlackPresent(false);
     }
 
     public void displayPossibleMoves(){
