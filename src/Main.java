@@ -108,75 +108,103 @@ class ChessGame extends JFrame {
         int counterOfFields = 0;
         for(FieldPanel field : listOfFields){
             field.setLayout(new GridBagLayout());
+
+            //test figures
             if(counterOfFields == 18){
                 JLabel icon = new JLabel();
                 icon.setIcon(wPawnIcon);
                 field.setFigure(icon, FieldPanel.FigureType.WPAWN);
             }
-            if(counterOfFields == 0 || counterOfFields == 7){ // black rooks
+            if(counterOfFields == 45){
+                JLabel icon = new JLabel();
+                icon.setIcon(bPawnIcon);
+                field.setFigure(icon, FieldPanel.FigureType.BPAWN);
+            }
+            if(counterOfFields == 35){
+                JLabel icon = new JLabel();
+                icon.setIcon(bPawnIcon);
+                field.setFigure(icon, FieldPanel.FigureType.BPAWN);
+            }
+
+            //all figures
+
+            // black rooks
+            if(counterOfFields == 0 || counterOfFields == 7){
                 JLabel icon = new JLabel();
                 icon.setIcon(bRookIcon);
                 field.setFigure(icon, FieldPanel.FigureType.BROOK);
             }
-            if(counterOfFields == 1 || counterOfFields == 6){ // black knights
+            // black knights
+            if(counterOfFields == 1 || counterOfFields == 6){
                 JLabel icon = new JLabel();
                 icon.setIcon(bKnightIcon);
                 field.setFigure(icon, FieldPanel.FigureType.BKNIGHT);
             }
-            if(counterOfFields == 2 || counterOfFields == 5){ // black bishops
+            // black bishops
+            if(counterOfFields == 2 || counterOfFields == 5){
                 JLabel icon = new JLabel();
                 icon.setIcon(bBishopIcon);
                 field.setFigure(icon, FieldPanel.FigureType.BBISHOP);
             }
-            if(counterOfFields == 3){                         // black queen
+            // black queen
+            if(counterOfFields == 3){
                 JLabel icon = new JLabel();
                 icon.setIcon(bQueenIcon);
                 field.setFigure(icon, FieldPanel.FigureType.BQUEEN);
             }
-            if(counterOfFields == 4){                         // black king
+            // black king
+            if(counterOfFields == 4){
                 JLabel icon = new JLabel();
                 icon.setIcon(bKingIcon);
                 field.setFigure(icon, FieldPanel.FigureType.BKING);
             }
+            // black pawns
             for(int i = 8; i < 16; i++){
-                if(counterOfFields == i){                     // black pawns
+                if(counterOfFields == i){
                     JLabel icon = new JLabel();
                     icon.setIcon(bPawnIcon);
                     field.setFigure(icon, FieldPanel.FigureType.BPAWN);
                 }
             }
+            // white pawns
             for(int i = 48; i < 56; i++){
-                if(counterOfFields == i){                     // white pawns
+                if(counterOfFields == i){
                     JLabel icon = new JLabel();
                     icon.setIcon(wPawnIcon);
                     field.setFigure(icon, FieldPanel.FigureType.WPAWN);
                 }
             }
-            if(counterOfFields == 56 || counterOfFields == 63){ // white rooks
+            // white rooks
+            if(counterOfFields == 56 || counterOfFields == 63){
                 JLabel icon = new JLabel();
                 icon.setIcon(wRookIcon);
                 field.setFigure(icon, FieldPanel.FigureType.WROOK);
             }
-            if(counterOfFields == 57 || counterOfFields == 62){ // white knights
+            // white knights
+            if(counterOfFields == 57 || counterOfFields == 62){
                 JLabel icon = new JLabel();
                 icon.setIcon(wKnightIcon);
                 field.setFigure(icon, FieldPanel.FigureType.WKNIGHT);
             }
-            if(counterOfFields == 58 || counterOfFields == 61){ // white bishops
+            // white bishops
+            if(counterOfFields == 58 || counterOfFields == 61){
                 JLabel icon = new JLabel();
                 icon.setIcon(wBishopIcon);
                 field.setFigure(icon, FieldPanel.FigureType.WBISHOP);
             }
-            if(counterOfFields == 59){ // white queen
+            // white queen
+            if(counterOfFields == 59){
                 JLabel icon = new JLabel();
                 icon.setIcon(wQueenIcon);
                 field.setFigure(icon, FieldPanel.FigureType.WQUEEN);
             }
-            if(counterOfFields == 60){ // white king
+            // white king
+            if(counterOfFields == 60){
                 JLabel icon = new JLabel();
                 icon.setIcon(wKingIcon);
                 field.setFigure(icon, FieldPanel.FigureType.WKING);
             }
+
             counterOfFields++;
         }
         pack();
@@ -200,9 +228,29 @@ class ChessGame extends JFrame {
                             }else if(selectedFigure){
                                 if(!field.getWhitePresent()){
                                     selectedFigure = false;
-                                    moveFigure(oldField, field);
-                                    pack();
+                                    if(moveFigure(oldField, field)){
+                                        whiteToMove=false;
+                                    }
                                 }else if(field.getWhitePresent()){
+                                    oldField.setUnSelected();
+                                    oldField = field;
+                                    showPossibleMoves(field);
+                                    field.setSelected();
+                                }
+                            }
+                        }else{
+                            if(field.getBlackPresent() && !selectedFigure){
+                                oldField = field;
+                                selectedFigure = true;
+                                showPossibleMoves(field);
+                                field.setSelected();
+                            }else if(selectedFigure){
+                                if(!field.getBlackPresent()){
+                                    selectedFigure = false;
+                                    if(moveFigure(oldField, field)){
+                                        whiteToMove=true;
+                                    }
+                                }else if(field.getBlackPresent()){
                                     oldField.setUnSelected();
                                     oldField = field;
                                     showPossibleMoves(field);
@@ -220,54 +268,224 @@ class ChessGame extends JFrame {
         }
     }
 
-    private void moveFigure(FieldPanel oldField, FieldPanel field) {
+    private Boolean moveFigure(FieldPanel oldField, FieldPanel field) {
+        Boolean moved = false;
         if(oldField.getPossibleMoves().contains(field)){
             field.removeFigure();
             field.setFigure(oldField.getFigure(),oldField.getFigureType());
             oldField.removeFigure();
             oldField.repaint();
+            moved = true;
         }
         for(FieldPanel clearField : listOfFields){
             clearField.setUnSelected();
         }
+        return moved;
     }
 
     private void checkPossibleMoves(FieldPanel field) {
         field.getPossibleMoves().removeAll(field.getPossibleMoves());
-        FieldPanel possibleField, possibleTakeField;
-        if(!field.isEmpty() || field.getWhitePresent() || field.getBlackPresent()){
+        FieldPanel possibleField;
+        Boolean foundPiece = false;
+        if(!field.isEmpty()){
             if(field.getFigureType() == FieldPanel.FigureType.WPAWN){
+                foundPiece = false;
                 if(field.getFigureY()==6){
+                    //2 fields to up
+                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-1);
+                    if(possibleField != null){
+                        if(possibleField.isEmpty()){
+                            field.addPossibleMoves(possibleField);
+                        }else{
+                            foundPiece=true;
+                        }
+                    }
 
-                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-1); // 1 up
-                    if(possibleField.isEmpty()){
+                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-2);
+                    if(possibleField != null && !foundPiece && possibleField.isEmpty()){
                         field.addPossibleMoves(possibleField);
                     }
 
-                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-2); // 2 up
-                    if(possibleField.isEmpty()){
+                    // fields on upper corners
+                    possibleField = getFieldByXY(field.getFigureX()-1, field.getFigureY()-1);
+                    if(possibleField!=null && possibleField.getBlackPresent()){
+                        field.addPossibleMoves(possibleField);
+                    }
+                    possibleField = getFieldByXY(field.getFigureX()+1, field.getFigureY()-1);
+                    if(possibleField!=null && possibleField.getBlackPresent()){
+                        field.addPossibleMoves(possibleField);
+                    }
+                }else{
+                    // field 1 up
+                    possibleField = getFieldByXY(field.getFigureX(),field.getFigureY()-1);
+                    if(possibleField!=null && possibleField.isEmpty()){
                         field.addPossibleMoves(possibleField);
                     }
 
-                }else if(field.getFigureY() < 6  && field.getFigureY()>=1){
-                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()-1); // 1 up
-                    if(possibleField.isEmpty()){
+                    // fields on upper corners
+                    possibleField = getFieldByXY(field.getFigureX()-1, field.getFigureY()-1);
+                    if(possibleField!=null && possibleField.getBlackPresent()){
+                        field.addPossibleMoves(possibleField);
+                    }
+                    possibleField = getFieldByXY(field.getFigureX()+1, field.getFigureY()-1);
+                    if(possibleField!=null && possibleField.getBlackPresent()){
                         field.addPossibleMoves(possibleField);
                     }
                 }
+            }
 
-                if(field.getFigureY() >=1){ // not first row
-                    if(field.getFigureX() >= 1){
-                        possibleTakeField = getFieldByXY(field.getFigureX()-1, field.figureY-1);
-                        if(!possibleTakeField.isEmpty() && possibleTakeField.getBlackPresent()){
-                            field.addPossibleMoves(possibleTakeField);
+            if(field.getFigureType() == FieldPanel.FigureType.BPAWN){
+                foundPiece = false;
+                if(field.getFigureY()==1){
+                    //2 fields to down
+                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()+1);
+                    if(possibleField != null){
+                        if(possibleField.isEmpty()){
+                            field.addPossibleMoves(possibleField);
+                        }else{
+                            foundPiece=true;
                         }
                     }
-                    if(field.getFigureX() <=6){
-                        possibleTakeField = getFieldByXY(field.getFigureX()+1, field.figureY-1);
-                        if(!possibleTakeField.isEmpty() && possibleTakeField.getBlackPresent()){
-                            field.addPossibleMoves(possibleTakeField);
+
+                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY()+2);
+                    if(possibleField != null && !foundPiece && possibleField.isEmpty()){
+                        field.addPossibleMoves(possibleField);
+                    }
+
+                    // fields on lower corners
+                    possibleField = getFieldByXY(field.getFigureX()-1, field.getFigureY()+1);
+                    if(possibleField!=null && possibleField.getWhitePresent()){
+                        field.addPossibleMoves(possibleField);
+                    }
+                    possibleField = getFieldByXY(field.getFigureX()+1, field.getFigureY()+1);
+                    if(possibleField!=null && possibleField.getWhitePresent()){
+                        field.addPossibleMoves(possibleField);
+                    }
+                }else{
+                    // field 1 down
+                    possibleField = getFieldByXY(field.getFigureX(),field.getFigureY()+1);
+                    if(possibleField!=null && possibleField.isEmpty()){
+                        field.addPossibleMoves(possibleField);
+                    }
+
+                    // fields on lower corners
+                    possibleField = getFieldByXY(field.getFigureX()-1, field.getFigureY()+1);
+                    if(possibleField!=null && possibleField.getWhitePresent()){
+                        field.addPossibleMoves(possibleField);
+                    }
+                    possibleField = getFieldByXY(field.getFigureX()+1, field.getFigureY()+1);
+                    if(possibleField!=null && possibleField.getWhitePresent()){
+                        field.addPossibleMoves(possibleField);
+                    }
+                }
+            }
+
+            if(field.getFigureType() == FieldPanel.FigureType.WBISHOP){
+                foundPiece = false;
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX() - i, field.getFigureY() - i);
+                    if (possibleField != null && possibleField.isEmpty() && !foundPiece) {
+                        field.addPossibleMoves(possibleField);
+                    }else if(possibleField != null && !possibleField.isEmpty() && !foundPiece){
+                        foundPiece=true;
+                        if(possibleField.getBlackPresent()){
+                            field.addPossibleMoves(possibleField);
                         }
+                        break;
+                    }
+                }
+                foundPiece=false;
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX() + i, field.getFigureY() - i);
+                    if (possibleField != null && possibleField.isEmpty() && !foundPiece) {
+                        field.addPossibleMoves(possibleField);
+                    }else if(possibleField != null && !possibleField.isEmpty() && !foundPiece){
+                        foundPiece=true;
+                        if(possibleField.getBlackPresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+                foundPiece=false;
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX() - i, field.getFigureY() + i);
+                    if (possibleField != null && possibleField.isEmpty() && !foundPiece) {
+                        field.addPossibleMoves(possibleField);
+                    }else if(possibleField != null && !possibleField.isEmpty() && !foundPiece){
+                        foundPiece=true;
+                        if(possibleField.getBlackPresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+                foundPiece=false;
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX()+i, field.getFigureY()+i);
+                    if(possibleField != null && possibleField.isEmpty() && !foundPiece){
+                        field.addPossibleMoves(possibleField);
+                    }else if(possibleField != null && !possibleField.isEmpty() && !foundPiece){
+                        foundPiece=true;
+                        if(possibleField.getBlackPresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if(field.getFigureType() == FieldPanel.FigureType.BBISHOP){
+                foundPiece = false;
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX() - i, field.getFigureY() - i);
+                    if (possibleField != null && possibleField.isEmpty() && !foundPiece) {
+                        field.addPossibleMoves(possibleField);
+                    }else if(possibleField != null && !possibleField.isEmpty() && !foundPiece){
+                        foundPiece=true;
+                        if(possibleField.getWhitePresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+                foundPiece=false;
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX() + i, field.getFigureY() - i);
+                    if (possibleField != null && possibleField.isEmpty() && !foundPiece) {
+                        field.addPossibleMoves(possibleField);
+                    }else if(possibleField != null && !possibleField.isEmpty() && !foundPiece){
+                        foundPiece=true;
+                        if(possibleField.getWhitePresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+                foundPiece=false;
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX() - i, field.getFigureY() + i);
+                    if (possibleField != null && possibleField.isEmpty() && !foundPiece) {
+                        field.addPossibleMoves(possibleField);
+                    }else if(possibleField != null && !possibleField.isEmpty() && !foundPiece){
+                        foundPiece=true;
+                        if(possibleField.getWhitePresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+                foundPiece=false;
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX()+i, field.getFigureY()+i);
+                    if(possibleField != null && possibleField.isEmpty() && !foundPiece){
+                        field.addPossibleMoves(possibleField);
+                    }else if(possibleField != null && !possibleField.isEmpty() && !foundPiece){
+                        foundPiece=true;
+                        if(possibleField.getWhitePresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
                     }
                 }
             }
@@ -338,7 +556,7 @@ class FieldPanel extends JPanel{
     }
 
     public boolean isEmpty() {
-        if (this.getIcon() == null) return true;
+        if (!this.getBlackPresent() && !this.getWhitePresent()) return true;
         else return false;
     }
 
