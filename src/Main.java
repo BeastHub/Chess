@@ -500,6 +500,205 @@ class ChessGame extends JFrame {
                     }
                 }
             }
+
+            if(field.getFigureType() == FieldPanel.FigureType.WKNIGHT){
+                foundPiece = false;
+
+                possibleField = getFieldByXY(field.getFigureX()-2, field.getFigureY()-1);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getBlackPresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()-2, field.getFigureY()+1);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getBlackPresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()+2, field.getFigureY()-1);if(possibleField != null && (possibleField.isEmpty() || possibleField.getBlackPresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()+2, field.getFigureY()+1);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getBlackPresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()-1, field.getFigureY()-2);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getBlackPresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()-1, field.getFigureY()+2);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getBlackPresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()+1, field.getFigureY()-2);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getBlackPresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()+1, field.getFigureY()+2);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getBlackPresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+            }
+
+            if(field.getFigureType() == FieldPanel.FigureType.BKNIGHT){
+                foundPiece = false;
+
+                possibleField = getFieldByXY(field.getFigureX()-2, field.getFigureY()-1);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getWhitePresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()-2, field.getFigureY()+1);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getWhitePresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()+2, field.getFigureY()-1);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getWhitePresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()+2, field.getFigureY()+1);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getWhitePresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()-1, field.getFigureY()-2);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getWhitePresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()-1, field.getFigureY()+2);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getWhitePresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()+1, field.getFigureY()-2);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getWhitePresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+                possibleField = getFieldByXY(field.getFigureX()+1, field.getFigureY()+2);
+                if(possibleField != null && (possibleField.isEmpty() || possibleField.getWhitePresent())){
+                    field.addPossibleMoves(possibleField);
+                }
+            }
+
+            if(field.getFigureType() == FieldPanel.FigureType.WROOK){
+                foundPiece = false;
+                // left
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX() - i, field.getFigureY());
+                    if (possibleField != null && !foundPiece && possibleField.isEmpty()) {
+                        field.addPossibleMoves(possibleField);
+                    }
+                    if(possibleField != null && !possibleField.isEmpty()){
+                        foundPiece = true;
+                        if(possibleField.getBlackPresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+                foundPiece = false;
+                // right
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX() + i, field.getFigureY());
+                    if (possibleField != null && !foundPiece && possibleField.isEmpty()) {
+                        field.addPossibleMoves(possibleField);
+                    }
+                    if(possibleField != null && !possibleField.isEmpty()){
+                        foundPiece = true;
+                        if(possibleField.getBlackPresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+                foundPiece = false;
+                // up
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY() - i);
+                    if (possibleField != null && !foundPiece && possibleField.isEmpty()) {
+                        field.addPossibleMoves(possibleField);
+                    }
+                    if(possibleField != null && !possibleField.isEmpty()){
+                        foundPiece = true;
+                        if(possibleField.getBlackPresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+                foundPiece = false;
+                // down
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY() + i);
+                    if (possibleField != null && !foundPiece && possibleField.isEmpty()) {
+                        field.addPossibleMoves(possibleField);
+                    }
+                    if(possibleField != null && !possibleField.isEmpty()){
+                        foundPiece = true;
+                        if(possibleField.getBlackPresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if(field.getFigureType() == FieldPanel.FigureType.BROOK){
+                foundPiece = false;
+                // left
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX() - i, field.getFigureY());
+                    if (possibleField != null && !foundPiece && possibleField.isEmpty()) {
+                        field.addPossibleMoves(possibleField);
+                    }
+                    if(possibleField != null && !possibleField.isEmpty()){
+                        foundPiece = true;
+                        if(possibleField.getWhitePresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+                foundPiece = false;
+                // right
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX() + i, field.getFigureY());
+                    if (possibleField != null && !foundPiece && possibleField.isEmpty()) {
+                        field.addPossibleMoves(possibleField);
+                    }
+                    if(possibleField != null && !possibleField.isEmpty()){
+                        foundPiece = true;
+                        if(possibleField.getWhitePresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+                foundPiece = false;
+                // up
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY() - i);
+                    if (possibleField != null && !foundPiece && possibleField.isEmpty()) {
+                        field.addPossibleMoves(possibleField);
+                    }
+                    if(possibleField != null && !possibleField.isEmpty()){
+                        foundPiece = true;
+                        if(possibleField.getWhitePresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+                foundPiece = false;
+                // down
+                for(int i=1; i<8; i++) {
+                    possibleField = getFieldByXY(field.getFigureX(), field.getFigureY() + i);
+                    if (possibleField != null && !foundPiece && possibleField.isEmpty()) {
+                        field.addPossibleMoves(possibleField);
+                    }
+                    if(possibleField != null && !possibleField.isEmpty()){
+                        foundPiece = true;
+                        if(possibleField.getWhitePresent()){
+                            field.addPossibleMoves(possibleField);
+                        }
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -643,10 +842,10 @@ class FieldPanel extends JPanel{
         String result = "";
         if(String.valueOf(figureType.charAt(1)).equals("K"))
             result = result.concat(String.valueOf(figureType.charAt(1)).concat(String.valueOf(figureType.charAt(2))));
-        else{
+        else if(!String.valueOf(figureType.charAt(1)).equals("P")){
             result = result.concat(String.valueOf(figureType.charAt(1)));
         }
-        return result.concat(getCharForNumber(getFigureX()+1).concat(String.valueOf(getFigureY())));
+        return result.concat(getCharForNumber(getFigureX()+1).concat(String.valueOf(8-getFigureY())));
     }
     private String getCharForNumber(int i) {
         return i > 0 && i < 27 ? String.valueOf((char)(i + 64)).toLowerCase() : null;
