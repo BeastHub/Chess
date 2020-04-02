@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args){
@@ -23,6 +24,7 @@ class ChessGame extends JFrame {
     Boolean whiteToMove=true;
     BufferedImage[] sprites;
     ImageIcon wPawnIcon, wKnightIcon, wBishopIcon, wRookIcon, wQueenIcon, wKingIcon, bPawnIcon, bKnightIcon, bBishopIcon, bRookIcon, bQueenIcon, bKingIcon;
+    HashMap<String, String> history = new HashMap<>();
     public ChessGame(){
         setResizable(false);
         setTitle("Chess by Beast :)");
@@ -216,7 +218,9 @@ class ChessGame extends JFrame {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     super.mousePressed(e);
-
+                    if(SwingUtilities.isRightMouseButton(e)) {
+                        printHistory();
+                    }
                     checkPossibleMoves(field); // add fields to list possibleMoves
                     if(SwingUtilities.isLeftMouseButton(e)){
                         if(whiteToMove){
@@ -267,15 +271,22 @@ class ChessGame extends JFrame {
             });
         }
     }
+    private void printHistory() {
+        history.entrySet().forEach(move->{
+            System.out.println(move.getKey() + " -> " + move.getValue());
+        });
+        System.out.println("_________________________________________________________________________________________________________");
+    }
 
     private Boolean moveFigure(FieldPanel oldField, FieldPanel field) {
         Boolean moved = false;
         if(oldField.getPossibleMoves().contains(field)){
+            moved = true;
             field.removeFigure();
             field.setFigure(oldField.getFigure(),oldField.getFigureType());
+            history.put(oldField.toString(oldField.getFigureType().toString()), field.toString(field.getFigureType().toString()));
             oldField.removeFigure();
             oldField.repaint();
-            moved = true;
         }
         for(FieldPanel clearField : listOfFields){
             clearField.setUnSelected();
@@ -491,6 +502,7 @@ class ChessGame extends JFrame {
             }
         }
     }
+
     private void showPossibleMoves(FieldPanel field){
         for(FieldPanel clearField : listOfFields){
             clearField.setUnSelected();
@@ -509,6 +521,10 @@ class ChessGame extends JFrame {
         return null;
     }
 
+    public HashMap<String, String> getHistory() {
+        return history;
+    }
+
     public static BufferedImage resize(BufferedImage img, int newW, int newH) {
         Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
         BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
@@ -522,17 +538,12 @@ class ChessGame extends JFrame {
 }
 
 class FieldPanel extends JPanel{
-    JPanel field;
     JLabel figure;
     FigureType figureType;
     Integer figureX,figureY;
     Boolean whitePresent, blackPresent;
     ArrayList<FieldPanel> possibleMoves;
     Icon icon;
-
-    public Icon getIcon() {
-        return icon;
-    }
 
     public void setIcon(Icon icon) {
         this.icon = icon;
@@ -544,7 +555,6 @@ class FieldPanel extends JPanel{
         this.blackPresent = false;
         this.figureX = figureX;
         this.figureY = figureY;
-        field = new JPanel();
         figure = new JLabel();
     }
 
@@ -629,7 +639,16 @@ class FieldPanel extends JPanel{
         setBlackPresent(false);
     }
 
-    public void displayPossibleMoves(){
-        System.out.println(getFigureX() + ", " + getFigureY());
+    public String toString(String figureType){
+        String result = "";
+        if(String.valueOf(figureType.charAt(1)).equals("K"))
+            result = result.concat(String.valueOf(figureType.charAt(1)).concat(String.valueOf(figureType.charAt(2))));
+        else{
+            result = result.concat(String.valueOf(figureType.charAt(1)));
+        }
+        return result.concat(getCharForNumber(getFigureX()+1).concat(String.valueOf(getFigureY())));
+    }
+    private String getCharForNumber(int i) {
+        return i > 0 && i < 27 ? String.valueOf((char)(i + 64)).toLowerCase() : null;
     }
 }
