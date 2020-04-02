@@ -25,6 +25,10 @@ class ChessGame extends JFrame {
     BufferedImage[] sprites;
     ImageIcon wPawnIcon, wKnightIcon, wBishopIcon, wRookIcon, wQueenIcon, wKingIcon, bPawnIcon, bKnightIcon, bBishopIcon, bRookIcon, bQueenIcon, bKingIcon;
     HashMap<String, String> history = new HashMap<>();
+    Color whiteColor= new Color(255, 211, 174);
+    Color blackColor= new Color(133, 99, 72);
+    Color selectedColor= new Color(161, 139, 132);
+    Color oldColor;
     public ChessGame(){
         setResizable(false);
         setTitle("Chess by Beast :)");
@@ -43,8 +47,6 @@ class ChessGame extends JFrame {
     }
 
     public void drawBoard(){
-        Color whiteColor = new Color(255, 211, 174);
-        Color blackColor = new Color(133, 99, 72);
         for(int i=0; i<8; i++){
             for(int j=0; j<8; j++){
                 FieldPanel field = new FieldPanel(j,i);
@@ -198,6 +200,9 @@ class ChessGame extends JFrame {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     super.mousePressed(e);
+                    if(SwingUtilities.isMiddleMouseButton(e)) {
+                        restartGame();
+                    }
                     if(SwingUtilities.isRightMouseButton(e)) {
                         printHistory();
                     }
@@ -207,12 +212,14 @@ class ChessGame extends JFrame {
                             if(field.getWhitePresent() && !selectedFigure){
                                 oldField = field;
                                 selectedFigure = true;
+                                oldColor = field.getBackground();
                                 showPossibleMoves(field);
                                 field.setSelected();
                             }else if(selectedFigure){
                                 if(!field.getWhitePresent()){
                                     selectedFigure = false;
                                     if(moveFigure(oldField, field)){
+                                        field.setBackground(oldColor);
                                         whiteToMove=false;
                                     }
                                 }else if(field.getWhitePresent()){
@@ -226,12 +233,14 @@ class ChessGame extends JFrame {
                             if(field.getBlackPresent() && !selectedFigure){
                                 oldField = field;
                                 selectedFigure = true;
+                                oldColor = field.getBackground();
                                 showPossibleMoves(field);
                                 field.setSelected();
                             }else if(selectedFigure){
                                 if(!field.getBlackPresent()){
                                     selectedFigure = false;
                                     if(moveFigure(oldField, field)){
+                                        field.setBackground(oldColor);
                                         whiteToMove=true;
                                     }
                                 }else if(field.getBlackPresent()){
@@ -248,9 +257,39 @@ class ChessGame extends JFrame {
                 public void mouseDragged(MouseEvent e) {
                     super.mouseDragged(e);
                 }
+                @Override
+                public void mouseEntered(MouseEvent e){
+                    super.mouseEntered(e);
+                    if(selectedFigure){
+                        if(field.isPossibleMove()){
+                            oldColor = field.getBackground();
+                            field.setBackground(selectedColor);
+                        }
+                    }
+                }
+                @Override
+                public void mouseExited(MouseEvent e){
+                    super.mouseExited(e);
+                    if(selectedFigure){
+                        if(field.isPossibleMove()){
+                            field.setBackground(oldColor);
+                        }
+                    }
+                }
             });
         }
     }
+
+    private void restartGame() {
+        whiteToMove = true;
+        history.clear();
+        for(FieldPanel field : listOfFields){
+            field.removeFigure();
+            field.setUnSelected();
+        }
+        loadIcons();
+    }
+
     private void printHistory() {
         history.entrySet().forEach(move->{
             System.out.println(move.getKey() + " -> " + move.getValue());
@@ -1057,7 +1096,7 @@ class FieldPanel extends JPanel{
     Boolean whitePresent, blackPresent;
     ArrayList<FieldPanel> possibleMoves;
     Icon icon;
-
+    JLabel selectedIcon;
     public void setIcon(Icon icon) {
         this.icon = icon;
     }
@@ -1085,6 +1124,15 @@ class FieldPanel extends JPanel{
 
     public void addPossibleMoves(FieldPanel possibleField) {
         getPossibleMoves().add(possibleField);
+    }
+
+    public boolean isPossibleMove() {
+        if(getBorder() != null){
+            if(getBorder().getBorderInsets(this).bottom==4){
+                return true;
+            }
+        }
+        return false;
     }
 
     public enum FigureType{
