@@ -110,26 +110,6 @@ class ChessGame extends JFrame {
         int counterOfFields = 0;
         for(FieldPanel field : listOfFields){
             field.setLayout(new GridBagLayout());
-
-            //test figures
-            if(counterOfFields == 18){
-                JLabel icon = new JLabel();
-                icon.setIcon(wPawnIcon);
-                field.setFigure(icon, FieldPanel.FigureType.WPAWN);
-            }
-            if(counterOfFields == 45){
-                JLabel icon = new JLabel();
-                icon.setIcon(bPawnIcon);
-                field.setFigure(icon, FieldPanel.FigureType.BPAWN);
-            }
-            if(counterOfFields == 35){
-                JLabel icon = new JLabel();
-                icon.setIcon(bPawnIcon);
-                field.setFigure(icon, FieldPanel.FigureType.BPAWN);
-            }
-
-            //all figures
-
             // black rooks
             if(counterOfFields == 0 || counterOfFields == 7){
                 JLabel icon = new JLabel();
