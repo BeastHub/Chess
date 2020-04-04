@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Main {
     public static void main(String[] args){
@@ -24,7 +24,7 @@ class ChessGame extends JFrame {
     Boolean whiteToMove=true;
     BufferedImage[] sprites;
     ImageIcon wPawnIcon, wKnightIcon, wBishopIcon, wRookIcon, wQueenIcon, wKingIcon, bPawnIcon, bKnightIcon, bBishopIcon, bRookIcon, bQueenIcon, bKingIcon;
-    HashMap<String, String> history = new HashMap<>();
+    LinkedHashMap<String, String> history = new LinkedHashMap<>();
     Color whiteColor= new Color(255, 211, 174);
     Color blackColor= new Color(133, 99, 72);
     Color selectedColor= new Color(161, 139, 132);
@@ -1073,7 +1073,7 @@ class ChessGame extends JFrame {
         return null;
     }
 
-    public HashMap<String, String> getHistory() {
+    public LinkedHashMap<String, String> getHistory() {
         return history;
     }
 
@@ -1113,6 +1113,7 @@ class FieldPanel extends JPanel{
     public void setSelected() {
         setBorder(BorderFactory.createLineBorder(new Color(193, 255, 179), 5));
     }
+
     public void setUnSelected() {
         setBorder(null);
     }
@@ -1209,6 +1210,7 @@ class FieldPanel extends JPanel{
         }
         return result.concat(getCharForNumber(getFigureX()+1).concat(String.valueOf(8-getFigureY())));
     }
+
     private String getCharForNumber(int i) {
         return i > 0 && i < 27 ? String.valueOf((char)(i + 64)).toLowerCase() : null;
     }
